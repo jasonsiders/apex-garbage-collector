@@ -1,0 +1,19 @@
+{
+	"name": "apex-garbage-collector",
+	"namespace": "",
+	"packageAliases": {
+		"apex-garbage-collector": "0HoDn000000kAOSKA2"
+	},
+	"packageDirectories": [
+		{
+			"path": "force-app",
+			"default": true,
+			"package": "apex-garbage-collector",
+			"versionName": "ver 0.1",
+			"versionNumber": "0.1.0.NEXT",
+			"versionDescription": ""
+		}
+	],
+	"sfdcLoginUrl": "https://login.salesforce.com",
+	"sourceApiVersion": "62.0"
+}
