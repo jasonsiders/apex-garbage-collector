@@ -1,4 +1,4 @@
-public without sharing class GarbageCollectorMetadataSelector {
+public without sharing abstract class GarbageCollectorMetadataSelector {
 	@TestVisible
 	private static Map<String, GarbageCollector__mdt> settings;
 
@@ -14,6 +14,8 @@ public without sharing class GarbageCollectorMetadataSelector {
         return settings?.get(developerName);
     }
 
+    // **** PRIVATE **** //
+    @TestVisible
     private static void init() {
         // Lazily-initialization; query & Map metadata if it hasn't already been done this transaction
         settings = settings ?? GarbageCollectorMetadataSelector.retrieveFromDatabase();
