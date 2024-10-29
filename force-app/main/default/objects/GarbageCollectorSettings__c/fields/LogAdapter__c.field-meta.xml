@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LogAdapter__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>The fully qualified API name (including namespace, if applicable) of the apex class used by the Garbage Collector framework for logging purposes. This apex class must have a public 0-argument constructor, and must implement the GarbageCollectorLogs.Adapter interface. 
+
+This interface has two required methods:
+- void log(System.LoggingLevel level, Object message);
+- void save();
+
+When left blank, or when no settings are defined, the application will print to traditional debug logs by default.</inlineHelpText>
+    <label>Log Adapter</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
