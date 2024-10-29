@@ -1,4 +1,4 @@
-@SuppressWarnings('PMD.EmptyStatementBlock')
+@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.EmptyStatementBlock')
 global abstract class GarbageCollectorLogs {
     private static final GarbageCollectorLogs.Adapter DEFAULT_ADAPTER = new DefaultLogger();
 
@@ -6,15 +6,10 @@ global abstract class GarbageCollectorLogs {
         try {   
             // Returns a logger plugin defined in Garbage Collector settings
             // If none defined or invalid, return a default logger which prints to traditional debug logs
-            GarbageCollectorSettings__c settings = GarbageCollectorSettings__c.getInstance();
-            System.debug('Settings: ' + settings);
-            String adapterName = settings?.LogAdapter__c;
-            System.debug('Log Adapter Name: ' + adapterName);
-            Type adapterType = Type.forName(adapterName);
-            System.debug('Log Adapter Type: ' + adapterType);
-            return (GarbageCollectorLogs.Adapter) adapterType?.newInstance() ?? DEFAULT_ADAPTER;
+            Type loggerPlugin = Type.forName(GarbageCollectorSettings__c.getInstance()?.LogAdapter__c);
+            return (GarbageCollectorLogs.Adapter) loggerPlugin?.newInstance() ?? DEFAULT_ADAPTER;
         } catch (Exception error) {
-            String msg = 'Error generating GarbageCollectorLogs.Adapter plugin: ' + error;
+            String msg = 'Error initializing GarbageCollectorLogs.Adapter: ' + error;
             DEFAULT_ADAPTER?.log(System.LoggingLevel.ERROR, msg);
             return DEFAULT_ADAPTER;
         }
