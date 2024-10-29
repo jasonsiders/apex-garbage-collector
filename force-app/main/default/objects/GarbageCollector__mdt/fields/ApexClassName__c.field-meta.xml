@@ -3,7 +3,7 @@
     <fullName>ApexClassName__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <inlineHelpText>The fully qualified name of an Apex Class which contains custom logic for querying records to be deleted. This apex class must implement the GarbageCollector.Worker interface.</inlineHelpText>
+    <inlineHelpText>The fully qualified name of an Apex Class which contains custom logic for querying records to be deleted. This apex class must implement the GarbageCollector.QueryLocator interface.</inlineHelpText>
     <label>Apex Class Name</label>
     <length>255</length>
     <required>false</required>
