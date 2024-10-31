@@ -97,13 +97,14 @@ public class GarbageCollectorLogsTest {
     }
 
     // **** INNER **** // 
+    @SuppressWarnings('PMD.EmptyStatementBlock')
     public class TestAdapter implements GarbageCollectorLogs.Adapter {
         public void log(System.LoggingLevel level, Object message) {
-            // This test adapter doesn't really do anything
+            // This test adapter doesn't need to do anything
         }
 
         public void save() {
-            // This test adapter doesn't really do anything
+            // This test adapter doesn't need to do anything
         }
     }
 }
