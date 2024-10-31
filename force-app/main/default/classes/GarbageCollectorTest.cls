@@ -1,3 +1,4 @@
+@SuppressWarnings('PMD.EmptyCatchBlock')
 @IsTest
 private class GarbageCollectorTest {
 	@IsTest
@@ -342,7 +343,7 @@ private class GarbageCollectorTest {
 	private class FatalErrorDml extends GarbageCollector.Dml {
 		public override List<Database.DeleteResult> deleteRecords(List<SObject> records) {
 			// This is just a proxy to surface up an unexpected error
-			throw new System.UnexpectedException('This is a test');
+			throw new System.IllegalArgumentException('This is a test');
 		}
 	}
 

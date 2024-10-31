@@ -1,4 +1,4 @@
-@SuppressWarnings('PMD.ApexSharingViolations')
+@SuppressWarnings('PMD.ApexSharingViolations, PMD.AvoidGlobalModifier')
 global without sharing virtual class GarbageCollector implements Database.Batchable<SObject> {
     // **** STATIC **** //
     @TestVisible
@@ -25,7 +25,7 @@ global without sharing virtual class GarbageCollector implements Database.Batcha
             return this.initLocator()?.getQueryLocator();
         } catch (Exception error) {
             LOGGER?.log(System.LoggingLevel.ERROR, this.logPrefix + 'Could not retrieve records:\n' + error);
-            return new EmptyQuery()?.getQueryLocator();
+            return new EmptyQueryLocator()?.getQueryLocator();
         } finally {
             LOGGER?.save();
         }
@@ -74,7 +74,7 @@ global without sharing virtual class GarbageCollector implements Database.Batcha
         if (this.current?.Type__c == 'Apex Based') {
 			Type locatorClass = Type.forName(this.current?.ApexClassName__c);
 			GarbageCollector.QueryLocator locator = (GarbageCollector.QueryLocator) locatorClass?.newInstance();
-			return locator ?? new GarbageCollector.EmptyQuery();
+			return locator ?? new GarbageCollector.EmptyQueryLocator();
 		} else {
 			return new GarbageCollector.SoqlBasedLocator(this.current);
 		}
@@ -82,20 +82,27 @@ global without sharing virtual class GarbageCollector implements Database.Batcha
 
     private GarbageCollector getNext() {
         // Get the next GarbageCollector__mdt to process
-		if (this.current != null) {
-			// Remove the current settings record from the map of settings to be processed
-			this.pending?.remove(this.current?.DeveloperName);
-		}
-		LOGGER?.log(System.LoggingLevel.FINEST, 'Pending GarbageCollector__mdt jobs: ' + this.pending?.keySet());
-        String nextJobName = (this.pending?.isEmpty() == false) ? this.pending?.values()?.get(0)?.DeveloperName : null;
-		this.current = GarbageCollectorMetadataSelector.get(nextJobName);
-		LOGGER?.log(System.LoggingLevel.FINEST, 'Next GarbageCollector__mdt job: ' + this.current?.DeveloperName);
+        String jobName = (this.pending?.isEmpty() == false) ? this.pending?.values()?.get(0)?.DeveloperName : null;
+		this.current = GarbageCollectorMetadataSelector.get(jobName);
+        // Remove the current job from the list of pending jobs
+        this.pending?.remove(jobName);
+        // Validate that the job's settings record is still active
+        if (this.current?.Active__c == false) {
+            // If so, skip the current job, and recurse to find the next job in the chain
+            LOGGER?.log(System.LoggingLevel.FINEST, this.logPrefix + 'Skipping inactive job');
+            this.getNext();
+        }
+        LOGGER?.log(System.LoggingLevel.FINEST, 'Next GarbageCollector__mdt job: ' + this.current?.DeveloperName);
+        LOGGER?.log(System.LoggingLevel.FINEST, 'Pending GarbageCollector__mdt jobs: ' + this.pending?.keySet());
 		return this;
     }
     
     // **** INNER **** //
     @TestVisible
     private virtual class Dml {
+        // This small utility class is responsible for processing DML for the Garbage Collector
+        // Normally, this would be delegated to an external utility, 
+        // but is included here to encapsulate the Garbage Collector application
         public virtual List<Database.DeleteResult> deleteRecords(List<SObject> records) {
             return Database.delete(records, false, System.AccessLevel.SYSTEM_MODE);
         }
@@ -105,7 +112,7 @@ global without sharing virtual class GarbageCollector implements Database.Batcha
         } 
     }
 
-    private class EmptyQuery implements GarbageCollector.QueryLocator {
+    private class EmptyQueryLocator implements GarbageCollector.QueryLocator {
         // This implementation always returns a completely empty query locator object
         public Database.QueryLocator getQueryLocator() {
             // This query is always performant, and always returns an empty list
@@ -115,18 +122,22 @@ global without sharing virtual class GarbageCollector implements Database.Batcha
     }
 
     global interface QueryLocator {
+        // Implement this interface to define custom logic that identifies records to be deleted.
+        // For use in conjunction with "Apex Based" GarbageCollector__mdt jobs.
+        // NOTE: In addition to implementing the method below, you will also need a public 0-arg constructor.
         Database.QueryLocator getQueryLocator();
     }
 
     global class Schedulable implements System.Schedulable {
-        public void execute(System.SchedulableContext context) {
-			// Kick off the garbage collector job!
+        // Allows the Garbage Collector job to be run on a regular schedule
+        global void execute(System.SchedulableContext context) {
 			new GarbageCollector()?.launch();
 			LOGGER?.save();
 		}
     }
 
     private class SoqlBasedLocator implements GarbageCollector.QueryLocator {
+        // This implementation constructs a SOQL query based on the GarbageCollector__mdt configuration
         private GarbageCollector__mdt settings;
 
 		private SoqlBasedLocator(GarbageCollector__mdt settings) {
