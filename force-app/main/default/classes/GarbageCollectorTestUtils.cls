@@ -1,6 +1,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.AvoidGlobalModifier, PMD.EmptyStatementBlock')
 @IsTest 
 global class GarbageCollectorTestUtils {
+    /**
+     * This class is stores utilities for testing the GarbageCollector application:
+     * - Provides a seam for package subscribers to inject mock GarbageCollector__mdt records for @IsTest purposes.
+     * - Contains a small library of inner classes used for DML mocking, specific to the GarbageCollector application itself.
+    **/
     private GarbageCollectorTestUtils() {
         // Necessary since @IsTest classes cannot also be abstract
     }

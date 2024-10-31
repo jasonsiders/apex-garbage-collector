@@ -1,5 +1,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexSharingViolations, PMD.AvoidGlobalModifier')
 global without sharing virtual class GarbageCollector implements Database.Batchable<SObject> {
+    /**
+     * The GarbageCollector class is responsible for deleting records identified by GarbageCollector__mdt records
+     * Each active GarbageCollector__mdt record results in its own batch job to delete matching records
+     * Once completed, the job moves to the next GarbageCollector__mdt in the queue, one at a time as to not monopolize resources
+    **/
     // **** STATIC **** //
     @TestVisible
     private static GarbageCollector.Dml dml = new GarbageCollector.Dml();

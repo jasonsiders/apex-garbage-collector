@@ -1,5 +1,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.EmptyStatementBlock')
 global abstract class GarbageCollectorLogs {
+    /**
+     * This class provides a plugin interface for logging within the GarbageCollector application.
+     * Callers can optionally create their own implementation of the `GarbageCollectorLogs.Adapter` interface,
+     * and point to this implenentation in the GarbageCollectorSettings__c custom setting type
+     * If no plugin is defined, logs are committed to traditional Salesforce debug logs by default.
+    **/
     private static final GarbageCollectorLogs.Adapter DEFAULT_ADAPTER = new DefaultLogger();
 
     global static GarbageCollectorLogs.Adapter init() {
