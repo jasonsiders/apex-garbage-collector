@@ -133,14 +133,6 @@ global without sharing virtual class GarbageCollector implements Database.Batcha
         Database.QueryLocator getQueryLocator();
     }
 
-    global class Schedulable implements System.Schedulable {
-        // Allows the Garbage Collector job to be run on a regular schedule
-        global void execute(System.SchedulableContext context) {
-			new GarbageCollector()?.launch();
-			LOGGER?.save();
-		}
-    }
-
     private class SoqlBasedLocator implements GarbageCollector.QueryLocator {
         // This implementation constructs a SOQL query based on the GarbageCollector__mdt configuration
         private GarbageCollector__mdt settings;

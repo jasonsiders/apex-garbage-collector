@@ -6,24 +6,8 @@ private class GarbageCollectorTest {
 
     // **** TESTS **** //
 	@IsTest
-	static void shouldLaunchJobFromSchedulable() {
-		GarbageCollectorTest.initSettings(Task.SObjectType);
-
-		Test.startTest();
-		new GarbageCollector.Schedulable()?.execute(null);
-		Test.stopTest();
-
-		List<AsyncApexJob> jobs = GarbageCollectorTest.getAsyncJobs();
-		Assert.areEqual(
-			1,
-			jobs?.size(),
-			'Wrong # of Batch Jobs: ' + JSON.serialize([SELECT Id, ApexClass.Name, JobType FROM AsyncApexJob])
-		);
-	}
-
-	@IsTest
 	static void shouldDeleteRecords() {
-		GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 
 		Test.startTest();
 		new GarbageCollector()?.launch();
@@ -41,7 +25,7 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHardDeleteRecords() {
-		GarbageCollector__mdt settings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollector__mdt settings = GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		settings.HardDelete__c = true;
 
 		Test.startTest();
@@ -60,10 +44,10 @@ private class GarbageCollectorTest {
 	}
 
 	@IsTest
-	static void shouldUseQueryBasedJob() {
-		GarbageCollector__mdt settings = GarbageCollectorTest.initSettings(Task.SObjectType);
-		settings.QueryWhereClause__c = 'CreatedDate = LAST_N_DAYS:365';
-		settings.Type__c = 'Query Based';
+	static void shouldUseApexBasedJob() {
+		GarbageCollector__mdt settings = GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
+		settings.ApexClassName__c = TestLocator.class.getName();
+		settings.Type__c = 'Apex Based';
 
 		Test.startTest();
 		new GarbageCollector()?.launch();
@@ -76,7 +60,7 @@ private class GarbageCollectorTest {
 	@IsTest
 	static void shouldCleanseQueryWhereClause() {
 		// Query-based logic should work even if users accidentally add a WHERE key as part of the clause
-		GarbageCollector__mdt settings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollector__mdt settings = GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		settings.QueryWhereClause__c = 'where CreatedDate = LAST_N_DAYS:365';
 		settings.Type__c = 'Query Based';
 
@@ -90,14 +74,14 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldNotProcessIfInactive() {
-		GarbageCollector__mdt settings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollector__mdt settings = GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		settings.Active__c = false;
 
 		Test.startTest();
 		new GarbageCollector()?.launch();
 		Test.stopTest();
 
-		List<AsyncApexJob> jobs = GarbageCollectorTest.getAsyncJobs();
+		List<AsyncApexJob> jobs = GarbageCollectorTestUtils.getBatchJobs();
 		Assert.areEqual(0, jobs?.size(), 'Wrong # of Batch Jobs');
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
 		Assert.areEqual(0, tasks?.size(), 'Wrong # of deleted Tasks');
@@ -121,8 +105,8 @@ private class GarbageCollectorTest {
 		// for the next GarbageCollector__mdt, if there is one
 		// * Note: There can only be one batch enqueued in an @IsTest context,
 		// so this is the only way we can test batch chaining logic
-		GarbageCollectorTest.initSettings(Account.SObjectType);
-		GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTestUtils.initTestSettings(Account.SObjectType);
+		GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		GarbageCollector job = new GarbageCollector();
 
 		Test.startTest();
@@ -130,7 +114,7 @@ private class GarbageCollectorTest {
 		Test.stopTest();
 
 		// Assert that a new instance of the job was enqueued
-		List<AsyncApexJob> jobs = GarbageCollectorTest.getAsyncJobs();
+		List<AsyncApexJob> jobs = GarbageCollectorTestUtils.getBatchJobs();
 		Assert.areEqual(1, jobs?.size(), 'Wrong # of Batch Jobs');
 		// Confirm that the records in this new job were deleted
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
@@ -143,7 +127,7 @@ private class GarbageCollectorTest {
 		// if there isn't another GarbageCollector__mdt to process
 		// * Note: There can only be one batch enqueued in an @IsTest context,
 		// so this is the only way we can test batch chaining logic
-		GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		GarbageCollector job = new GarbageCollector();
 
 		Test.startTest();
@@ -151,13 +135,13 @@ private class GarbageCollectorTest {
 		Test.stopTest();
 
 		// Since there's nothing to be processed after the current settings, the job will complete
-		List<AsyncApexJob> jobs = GarbageCollectorTest.getAsyncJobs();
+		List<AsyncApexJob> jobs = GarbageCollectorTestUtils.getBatchJobs();
 		Assert.areEqual(0, jobs?.size(), 'Wrong # of Batch Jobs');
 	}
 
 	@IsTest
 	static void shouldHandleBadApexClassName() {
-		GarbageCollector__mdt badSettings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollector__mdt badSettings = GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		badSettings.ApexClassName__c = 'abcd1234'; // Not a real apex class name
 		badSettings.Type__c = 'Apex Based';
 
@@ -171,7 +155,7 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHandleMissingApexClassName() {
-		GarbageCollector__mdt badSettings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollector__mdt badSettings = GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		badSettings.ApexClassName__c = null; // Should cause a null pointer exception for Type.forName() calls
 		badSettings.Type__c = 'Apex Based';
 
@@ -185,7 +169,7 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHandleBadQuery() {
-		GarbageCollector__mdt badSettings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollector__mdt badSettings = GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		badSettings.QueryWhereClause__C = 'abcd1234'; // Not a valid where clause
 		badSettings.Type__c = 'Query Based';
 
@@ -199,7 +183,7 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHandleMissingQuery() {
-		GarbageCollector__mdt badSettings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollector__mdt badSettings = GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		badSettings.QueryWhereClause__C = null;
 		badSettings.Type__c = 'Query Based';
 
@@ -213,7 +197,7 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHandleFailedDeletions() {
-		GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		Task badTask = [SELECT Id FROM Task LIMIT 1]?.get(0);
 		GarbageCollector.dml = new FailingDml()?.fail(badTask);
 
@@ -228,7 +212,7 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHandleUnexpectedErrors() {
-		GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 		GarbageCollector.dml = new FatalErrorDml();
 
 		Test.startTest();
@@ -242,8 +226,8 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHandleErrorsWhileRelaunching() {
-		GarbageCollectorTest.initSettings(Task.SObjectType);
-		GarbageCollectorTest.initSettings(Contact.SObjectType);
+		GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
+		GarbageCollectorTestUtils.initTestSettings(Contact.SObjectType);
 		// Initialize a job with an injected exception in the launch() method
 		GarbageCollector job = new BadCollector();
 
@@ -252,7 +236,7 @@ private class GarbageCollectorTest {
 		Test.stopTest();
 
 		// Assert that a job was not launched
-		List<AsyncApexJob> jobs = GarbageCollectorTest.getAsyncJobs();
+		List<AsyncApexJob> jobs = GarbageCollectorTestUtils.getBatchJobs();
 		Assert.areEqual(0, jobs?.size(), 'Wrong # of Batch Jobs');
 	}
 
@@ -268,46 +252,8 @@ private class GarbageCollectorTest {
 		insert tasks;
 	}
 
-	static List<AsyncApexJob> getAsyncJobs() {
-		// Note: Even though the Async is technically an inner type, the AsyncApexJob always points to the outer class
-		return [
-			SELECT Id
-			FROM AsyncApexJob
-			WHERE ApexClass.Name = :GarbageCollector.class.getName() AND JobType = 'BatchApex'
-		];
-	}
-
 	static List<Task> getDeletedTasks() {
 		return [SELECT Id FROM Task WHERE IsDeleted = TRUE ALL ROWS];
-	}
-
-	static EntityDefinition getEntity(SObjectType objectType) {
-		List<EntityDefinition> entities = [
-			SELECT Id, QualifiedApiName
-			FROM EntityDefinition
-			WHERE QualifiedApiName = :objectType.toString()
-			LIMIT 1
-		];
-		return entities?.isEmpty() == false ? entities?.get(0) : null;
-	}
-
-	static GarbageCollector__mdt initSettings(SObjectType objectType) {
-		EntityDefinition entity = GarbageCollectorTest.getEntity(Task.SObjectType);
-		GarbageCollector__mdt settings = new GarbageCollector__mdt(
-			Active__c = true,
-			ApexClassName__c = TestLocator.class.getName(),
-			BatchSize__c = Decimal.valueOf(TEST_SIZE),
-			DeveloperName = objectType?.toString() + '_Test',
-			HardDelete__c = false,
-			SObjectType__c = entity?.Id,
-			Type__c = 'Apex Based'
-		);
-        // Mock the parent object details for the SObjectType entity, that would normally be retrieved via SOQL
-		Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(settings));
-		params?.put('SObjectType__r', entity);
-		settings = (GarbageCollector__mdt) JSON.deserialize(JSON.serialize(params), GarbageCollector__mdt.class);
-		GarbageCollectorTestUtils.inject(settings);
-		return settings;
 	}
 
 	// **** INNER **** //
