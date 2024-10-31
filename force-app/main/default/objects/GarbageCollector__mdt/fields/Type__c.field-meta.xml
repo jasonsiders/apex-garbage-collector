@@ -5,7 +5,7 @@
     <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Indicates how the garbage collector will retrieve records to be deleted:
 
-- Apex Based: Use an apex class that implements the &quot;GarbageCollector.Worker&quot; interface to define custom query logic. Choose this option when a simple SOQL query is not enough to capture your requirements.
+- Apex Based: Use an apex class that implements the &quot;GarbageCollector.QueryLocator&quot; interface to define custom query logic. Choose this option when a simple SOQL query is not enough to capture your requirements.
 
 - Query Based: A SOQL query is built using the provided &quot;SObjectType&quot; and &quot;Query Where Clause&quot;. This option should cover most garbage collection use cases.</inlineHelpText>
     <label>Type</label>

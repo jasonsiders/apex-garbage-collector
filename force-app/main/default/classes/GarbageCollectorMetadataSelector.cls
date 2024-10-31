@@ -1,3 +1,4 @@
+@SuppressWarnings('PMD.ApexDoc')
 public without sharing abstract class GarbageCollectorMetadataSelector {
 	@TestVisible
 	private static Map<String, GarbageCollector__mdt> settings;
