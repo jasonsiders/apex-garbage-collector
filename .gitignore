@@ -44,5 +44,8 @@ $RECYCLE.BIN/
 **/.venv/
 **/venv/
 
+# VS Code Settings
+.vscode/settings.json
+
 # Salesforce Profiles
 force-app/main/default/profiles/
