@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>HardDelete__c</fullName>
-    <defaultValue>false</defaultValue>
-    <fieldManageability>SubscriberControlled</fieldManageability>
-    <inlineHelpText>When checked, records deleted by the garbage collector will skip the recycle bin, permanently deleting them right away.</inlineHelpText>
-    <label>Hard Delete</label>
-    <type>Checkbox</type>
-</CustomField>

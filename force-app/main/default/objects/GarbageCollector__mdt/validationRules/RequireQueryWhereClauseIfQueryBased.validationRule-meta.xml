@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>RequireQueryWhereClauseIfQueryBased</fullName>
-    <active>true</active>
-    <description>If Type = &quot;Query Based&quot;, then Query Where Clause is required.</description>
-    <errorConditionFormula>ISBLANK(QueryWhereClause__c) &amp;&amp; ISPICKVAL(Type__c, &quot;Query Based&quot;)</errorConditionFormula>
-    <errorDisplayField>QueryWhereClause__c</errorDisplayField>
-    <errorMessage>Query Where Clause is required for &quot;Query Based&quot; Garbage Collectors</errorMessage>
-</ValidationRule>
