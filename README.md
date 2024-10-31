@@ -1,11 +1,10 @@
 # apex-garbage-collector
 
-Use `apex-garbage-collector` to automatically delete old, stale data. 
-- [ ] TODO!
+Data clutter is a common challenge in Salesforce orgs. apex-garbage-collector is a lightweight solution designed to automate the cleanup of stale data, helping you maintain an organized and efficient environment. With configurable, flexible rules, this tool is straightforward to set up and adaptable to various data deletion needs. Administrators can leverage its ease of configuration, while developers benefit from options for custom query logic when needed.
 
 ## Installation
 
-`apex-garbage-collector` is available as an unlocked package. You can install it by running the below command, and replacing `<<package_version_id>>` with the [latest version](https://github.com/jasonsiders/apex-garbage-collector/releases/latest)'s package Id, which starts with `04t`:
+`apex-garbage-collector` is available as an unlocked package. To install, run the following command, replacing `<<package_version_id>>` with the latest version's package ID (which begins with `04t`):
 
 ```sh
 sf package install -p <<package_version_id>>
@@ -15,7 +14,13 @@ sf package install -p <<package_version_id>>
 Using `apex-garbage-collector` is easy. In most cases, administrators can use the package without the need for any custom code. However, the package does provide a mechanism for developers to write custom query logic if required.
 
 ### Configure Garbage Collector Jobs with `GarbageCollector__mdt`
-- [ ] TODO!
+Use the `GarbageCollector__mdt` custom metadata type to define which records can be deleted by the Garbage Collector. This object contains a number of configuration options.
+
+![A sample GarbageCollector__mdt record](media/GarbageCollector.png)
+
+Generally speaking, there are two types of Garbage Collectors:
+- **Query Based**: (Most Common) Uses the record's `SObjectType` and `Query Where Clause` fields to create a SOQL query that will find and delete matching records. This approach does not require any additional code. For an example, see above.
+- **Apex Based**: Delegates the responsibility of querying records to be deleted to a custom apex class, stored in the `Apex Class Name` field. Use this option when simple query logic does not capture your use case.
 
 ### Run the `GarbageCollector` Job
 Once you've defined criteria for deleting records with `GarbageCollector__mdt`, running the logic is easy. You run the job on a one-off basis via this anonymous apex:
