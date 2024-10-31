@@ -1,5 +1,9 @@
 @IsTest 
 public class GarbageCollectorLogsTest {
+    // **** CONSTANTS **** //
+    private static final Type DEFAULT_ADAPTER_TYPE = GarbageCollectorLogs.DefaultLogger.class;
+
+    // **** TESTS **** //
     @IsTest 
     static void shouldUseProvidedAdapter() {
         Type adapterType = GarbageCollectorLogsTest.TestAdapter.class;
@@ -89,8 +93,6 @@ public class GarbageCollectorLogsTest {
     }
 
     // **** SETUP **** // 
-    private static final Type DEFAULT_ADAPTER_TYPE = GarbageCollectorLogs.DefaultLogger.class;
-
     @TestSetup 
     static void setup() {
         delete [SELECT Id FROM GarbageCollectorSettings__c];

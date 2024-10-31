@@ -1,5 +1,6 @@
 @IsTest
 private class GarbageCollectorMetadataSelectorTest {
+	// **** TESTS **** //
 	@IsTest
 	static void shouldGetAllFromDatabase() {
 		Integer numExpected = GarbageCollector__mdt.getAll()?.size();

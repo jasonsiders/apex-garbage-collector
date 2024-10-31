@@ -1,9 +1,13 @@
 @SuppressWarnings('PMD.EmptyCatchBlock')
 @IsTest
 private class GarbageCollectorTest {
+    // **** CONSTANTS **** //
+    static final Integer TEST_SIZE = 10;
+
+    // **** TESTS **** //
 	@IsTest
 	static void shouldLaunchJobFromSchedulable() {
-		GarbageCollector__mdt settings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTest.initSettings(Task.SObjectType);
 
 		Test.startTest();
 		new GarbageCollector.Schedulable()?.execute(null);
@@ -19,10 +23,10 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldDeleteRecords() {
-		GarbageCollector__mdt settings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTest.initSettings(Task.SObjectType);
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
@@ -41,7 +45,7 @@ private class GarbageCollectorTest {
 		settings.HardDelete__c = true;
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
@@ -62,7 +66,7 @@ private class GarbageCollectorTest {
 		settings.Type__c = 'Query Based';
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
@@ -77,7 +81,7 @@ private class GarbageCollectorTest {
 		settings.Type__c = 'Query Based';
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
@@ -90,7 +94,7 @@ private class GarbageCollectorTest {
 		settings.Active__c = false;
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		List<AsyncApexJob> jobs = GarbageCollectorTest.getAsyncJobs();
@@ -113,16 +117,15 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldLaunchNextBatchJobInChain() {
-		// * The finish method will launch a new instance of the batch job
+		// The finish method will launch a new instance of the batch job
 		// for the next GarbageCollector__mdt, if there is one
 		// * Note: There can only be one batch enqueued in an @IsTest context,
 		// so this is the only way we can test batch chaining logic
-		GarbageCollector__mdt currentSettings = GarbageCollectorTest.initSettings(Account.SObjectType);
-		GarbageCollector__mdt nextSettings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTest.initSettings(Account.SObjectType);
+		GarbageCollectorTest.initSettings(Task.SObjectType);
 		GarbageCollector job = new GarbageCollector();
 
 		Test.startTest();
-		System.debug('Starting test');
 		job?.finish(null);
 		Test.stopTest();
 
@@ -140,7 +143,7 @@ private class GarbageCollectorTest {
 		// if there isn't another GarbageCollector__mdt to process
 		// * Note: There can only be one batch enqueued in an @IsTest context,
 		// so this is the only way we can test batch chaining logic
-		GarbageCollector__mdt currentSettings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTest.initSettings(Task.SObjectType);
 		GarbageCollector job = new GarbageCollector();
 
 		Test.startTest();
@@ -159,7 +162,7 @@ private class GarbageCollectorTest {
 		badSettings.Type__c = 'Apex Based';
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
@@ -173,7 +176,7 @@ private class GarbageCollectorTest {
 		badSettings.Type__c = 'Apex Based';
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
@@ -187,7 +190,7 @@ private class GarbageCollectorTest {
 		badSettings.Type__c = 'Query Based';
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
@@ -201,7 +204,7 @@ private class GarbageCollectorTest {
 		badSettings.Type__c = 'Query Based';
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		List<Task> tasks = GarbageCollectorTest.getDeletedTasks();
@@ -210,12 +213,12 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHandleFailedDeletions() {
-		GarbageCollector__mdt settings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTest.initSettings(Task.SObjectType);
 		Task badTask = [SELECT Id FROM Task LIMIT 1]?.get(0);
 		GarbageCollector.dml = new FailingDml()?.fail(badTask);
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		// Assert that all of the other records were deleted
@@ -225,11 +228,11 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHandleUnexpectedErrors() {
-		GarbageCollector__mdt settings = GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTest.initSettings(Task.SObjectType);
 		GarbageCollector.dml = new FatalErrorDml();
 
 		Test.startTest();
-		Id jobId = new GarbageCollector()?.launch();
+		new GarbageCollector()?.launch();
 		Test.stopTest();
 
 		// Confirm that none of the records were deleted
@@ -239,8 +242,8 @@ private class GarbageCollectorTest {
 
 	@IsTest
 	static void shouldHandleErrorsWhileRelaunching() {
-		GarbageCollector__mdt settings1 = GarbageCollectorTest.initSettings(Task.SObjectType);
-		GarbageCollector__mdt settings2 = GarbageCollectorTest.initSettings(Contact.SObjectType);
+		GarbageCollectorTest.initSettings(Task.SObjectType);
+		GarbageCollectorTest.initSettings(Contact.SObjectType);
 		// Initialize a job with an injected exception in the launch() method
 		GarbageCollector job = new BadCollector();
 
@@ -254,8 +257,6 @@ private class GarbageCollectorTest {
 	}
 
 	// **** HELPER **** //
-	static final Integer TEST_SIZE = 10;
-
 	@TestSetup
 	static void setup() {
 		// Create a bunch of records to be deleted
