@@ -1,4 +1,4 @@
-@SuppressWarnings('PMD.ApexSharingViolations, PMD.AvoidGlobalModifier')
+@SuppressWarnings('PMD.ApexDoc, PMD.ApexSharingViolations, PMD.AvoidGlobalModifier')
 global without sharing virtual class GarbageCollector implements Database.Batchable<SObject> {
     // **** STATIC **** //
     @TestVisible

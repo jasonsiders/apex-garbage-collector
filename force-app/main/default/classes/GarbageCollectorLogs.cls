@@ -1,4 +1,4 @@
-@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.EmptyStatementBlock')
+@SuppressWarnings('PMD.ApexDoc, PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.EmptyStatementBlock')
 global abstract class GarbageCollectorLogs {
     private static final GarbageCollectorLogs.Adapter DEFAULT_ADAPTER = new DefaultLogger();
 

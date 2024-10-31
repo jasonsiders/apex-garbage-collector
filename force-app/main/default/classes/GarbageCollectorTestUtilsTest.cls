@@ -1,5 +1,6 @@
 @IsTest
 private class GarbageCollectorTestUtilsTest {
+    // **** TESTS **** //
     @IsTest 
     static void shouldMockGarbageCollector() {
         String name = 'abcd_1234';

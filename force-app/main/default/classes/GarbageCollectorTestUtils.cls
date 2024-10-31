@@ -1,4 +1,4 @@
-@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.EmptyStatementBlock')
+@SuppressWarnings('PMD.ApexDoc, PMD.AvoidGlobalModifier, PMD.EmptyStatementBlock')
 @IsTest 
 global class GarbageCollectorTestUtils {
     private GarbageCollectorTestUtils() {

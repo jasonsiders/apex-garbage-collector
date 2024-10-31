@@ -1,3 +1,4 @@
+@SuppressWarnings('PMD.ApexDoc')
 @IsTest 
 public class GarbageCollectorLogsTest {
     // **** CONSTANTS **** //
