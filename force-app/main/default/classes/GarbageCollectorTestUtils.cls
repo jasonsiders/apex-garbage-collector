@@ -21,7 +21,8 @@ global class GarbageCollectorTestUtils {
 	global static void inject(GarbageCollector__mdt mockRecord) {
 		// Inject the provided GarbageCollector__mdt record into the test context
 		// This is necessary since DML is not supported on custom metadata types.
-		GarbageCollectorMetadataSelector.init();
+		GarbageCollectorMetadataSelector.settings = GarbageCollectorMetadataSelector.settings ??
+			new Map<String, GarbageCollector__mdt>();
 		String name = mockRecord?.DeveloperName;
 		GarbageCollectorMetadataSelector.settings?.put(name, mockRecord);
 	}

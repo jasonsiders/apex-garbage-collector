@@ -15,8 +15,8 @@ global abstract class GarbageCollectorLogs {
 			Type loggerPlugin = Type.forName(GarbageCollectorSettings__c.getInstance()?.LogAdapter__c);
 			return (GarbageCollectorLogs.Adapter) loggerPlugin?.newInstance() ?? DEFAULT_ADAPTER;
 		} catch (Exception error) {
-			String msg = 'Error initializing GarbageCollectorLogs.Adapter: ' + error;
-			DEFAULT_ADAPTER?.log(System.LoggingLevel.ERROR, msg);
+			String msg = 'Could not initialize GarbageCollectorLogs.Adapter: ' + error;
+			DEFAULT_ADAPTER?.log(System.LoggingLevel.WARN, msg);
 			return DEFAULT_ADAPTER;
 		}
 	}
