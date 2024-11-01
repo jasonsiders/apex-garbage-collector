@@ -143,7 +143,7 @@ global without sharing virtual class GarbageCollector implements Database.Batcha
 
 		public Database.QueryLocator getQueryLocator() {
 			String query = this.toString();
-            String logMsg = SoqlBasedLocator.class + ' [' + this.settings?.DeveloperName + ']\nQuery: ' + query;
+			String logMsg = SoqlBasedLocator.class + ' [' + this.settings?.DeveloperName + ']\nQuery: ' + query;
 			LOGGER?.log(System.LoggingLevel.FINEST, logMsg);
 			return Database.getQueryLocator(query, System.AccessLevel.SYSTEM_MODE);
 		}
