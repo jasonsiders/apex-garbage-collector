@@ -1,6 +1,6 @@
-@IsTest 
+@IsTest
 private class GarbageCollectorSchedulableTest {
-    @IsTest
+	@IsTest
 	static void shouldLaunchJobFromSchedulable() {
 		GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
 
