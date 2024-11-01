@@ -2,7 +2,8 @@
 	"name": "apex-garbage-collector",
 	"namespace": "",
 	"packageAliases": {
-		"apex-garbage-collector": "0HoDn000000kAOSKA2"
+		"apex-garbage-collector": "0HoDn000000kAOSKA2",
+		"apex-garbage-collector@0.1.0-3": "04tDn0000006zJ8IAI"
 	},
 	"packageDirectories": [
 		{
