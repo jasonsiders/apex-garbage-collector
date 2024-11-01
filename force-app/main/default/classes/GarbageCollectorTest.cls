@@ -1,10 +1,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.EmptyCatchBlock')
 @IsTest
 private class GarbageCollectorTest {
-    // **** CONSTANTS **** //
-    static final Integer TEST_SIZE = 10;
+	// **** CONSTANTS **** //
+	static final Integer TEST_SIZE = 10;
 
-    // **** TESTS **** //
+	// **** TESTS **** //
 	@IsTest
 	static void shouldDeleteRecords() {
 		GarbageCollectorTestUtils.initTestSettings(Task.SObjectType);
@@ -244,11 +244,11 @@ private class GarbageCollectorTest {
 	@TestSetup
 	static void setup() {
 		// Create a bunch of records to be deleted
-        List<Task> tasks = new List<Task>();
-        for (Integer i = 0; i < TEST_SIZE; i++) {
-            Task task = new Task();
-            tasks?.add(task); 
-        }
+		List<Task> tasks = new List<Task>();
+		for (Integer i = 0; i < TEST_SIZE; i++) {
+			Task task = new Task();
+			tasks?.add(task);
+		}
 		insert tasks;
 	}
 
@@ -277,9 +277,11 @@ private class GarbageCollectorTest {
 			List<Database.DeleteResult> results = new List<Database.DeleteResult>();
 			for (Id recordId : this.failedRecordIds) {
 				recordMap?.remove(recordId);
-				Database.DeleteResult mockResult = (Database.DeleteResult) new GarbageCollectorTestUtils.MockDmlResult(recordId)
-                    ?.withError()
-                    ?.toDatabaseResult(Database.DeleteResult.class);
+				Database.DeleteResult mockResult = (Database.DeleteResult) new GarbageCollectorTestUtils.MockDmlResult(
+						recordId
+					)
+					?.withError()
+					?.toDatabaseResult(Database.DeleteResult.class);
 				results?.add(mockResult);
 			}
 			results?.addAll(Database.delete(recordMap?.values()));
