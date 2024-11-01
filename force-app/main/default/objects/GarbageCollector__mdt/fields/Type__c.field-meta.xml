@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <defaultValue>&quot;Query Based&quot;</defaultValue>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Indicates how the garbage collector will retrieve records to be deleted:
+
+- Apex Based: Use an apex class that implements the &quot;GarbageCollector.QueryLocator&quot; interface to define custom query logic. Choose this option when a simple SOQL query is not enough to capture your requirements.
+
+- Query Based: A SOQL query is built using the provided &quot;SObjectType&quot; and &quot;Query Where Clause&quot;. This option should cover most garbage collection use cases.</inlineHelpText>
+    <label>Type</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Apex Based</fullName>
+                <default>true</default>
+                <label>Apex Based</label>
+            </value>
+            <value>
+                <fullName>Query Based</fullName>
+                <default>false</default>
+                <label>Query Based</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

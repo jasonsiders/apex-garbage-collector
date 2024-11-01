@@ -43,3 +43,9 @@ $RECYCLE.BIN/
 **/__pycache__/
 **/.venv/
 **/venv/
+
+# VS Code Settings
+.vscode/settings.json
+
+# Salesforce Profiles
+force-app/main/default/profiles/

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NoApexClassNameIfQueryBased</fullName>
+    <active>true</active>
+    <description>If Type = &quot;Query Based&quot;, then Apex Class Name should be blank.</description>
+    <errorConditionFormula
+	>NOT(ISBLANK(ApexClassName__c)) &amp;&amp; ISPICKVAL(Type__c, &quot;Query Based&quot;)</errorConditionFormula>
+    <errorDisplayField>ApexClassName__c</errorDisplayField>
+    <errorMessage>Apex Class Name should be blank for &quot;Query Based&quot; Garbage Collectors</errorMessage>
+</ValidationRule>

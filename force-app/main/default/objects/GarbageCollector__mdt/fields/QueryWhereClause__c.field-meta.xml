@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>QueryWhereClause__c</fullName>
+    <defaultValue>&quot;LastModifiedDate &lt; LAST_N_DAYS:30&quot;</defaultValue>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText
+	>The WHERE Clause of a SOQL Query that defines which records should be deleted, in a &quot;Query Based&quot; Garbage Collector.
+
+This result will be injected into the &quot;WHERE&quot; clause, as demonstrated below:
+
+SELECT Id
+FROM MyObject__c
+WHERE {{QueryWhereClause__c}}</inlineHelpText>
+    <label>Query Where Clause</label>
+    <length>19000</length>
+    <required>false</required>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>
