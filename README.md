@@ -65,6 +65,7 @@ Here's a sample adapter that hooks into the [`apex-logger`](https://github.com/j
 
 ```java
 public class SampleAdapter implements GarbageCollectorLogs.Adapter {
+    // This is the Logger object from apex-logger
     private Logger logger = new Logger();
 
     public void log(System.LoggingLevel level, Object message) {
