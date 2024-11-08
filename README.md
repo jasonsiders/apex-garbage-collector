@@ -58,8 +58,7 @@ By default, the application will post internal logs to standard Salesforce debug
 
 To get started, first create an Apex class that fulfills these requirements:
 
-1. Implement the `GarbageCollectorLogs.Adapter` interface.
-    - This interface has just one method: `
+1. Implement the `GarbageCollectorLogs.Adapter` interface (shown below).
 2. Ensure your class has a publicly accessible, 0-argument constructor
 
 Here's a sample adapter that hooks into the [`apex-logger`](https://github.com/jasonsiders/apex-logger) framework:
